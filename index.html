@@ -5,20 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Previsualización de PDF</title>
     <style>
-      #pdfViewer {
-        width: 100%;
-        height: 100vh;
-        border: none;
-      }
       body {
         font-family: Arial, sans-serif;
         margin: 0;
         padding: 0;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
         overflow: hidden;
       }
-      h1 {
-        text-align: center;
-        margin-top: 20px;
+      #pdfViewer {
+        width: 100%;
+        height: 100%;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      canvas {
+        display: block;
+        margin-bottom: 20px;
       }
     </style>
   </head>
@@ -33,22 +40,32 @@
       var loadingTask = pdfjsLib.getDocument(url);
       loadingTask.promise
         .then(function (pdf) {
-          pdf.getPage(1).then(function (page) {
-            var scale = 1.5;
-            var viewport = page.getViewport({ scale: scale });
+          var totalPages = pdf.numPages;
 
-            var canvas = document.createElement("canvas");
-            var context = canvas.getContext("2d");
-            canvas.width = viewport.width;
-            canvas.height = viewport.height;
+          function renderPage(pageNum) {
+            pdf.getPage(pageNum).then(function (page) {
+              var viewport = page.getViewport({ scale: 1 });
 
-            page.render({
-              canvasContext: context,
-              viewport: viewport,
+              var scale = window.innerWidth / viewport.width; // Calcular la escala en base al ancho del dispositivo
+              var scaledViewport = page.getViewport({ scale: scale });
+
+              var canvas = document.createElement("canvas");
+              var context = canvas.getContext("2d");
+              canvas.width = scaledViewport.width;
+              canvas.height = scaledViewport.height;
+
+              page.render({
+                canvasContext: context,
+                viewport: scaledViewport,
+              });
+
+              document.getElementById("pdfViewer").appendChild(canvas);
             });
+          }
 
-            document.getElementById("pdfViewer").appendChild(canvas);
-          });
+          for (var pageNum = 1; pageNum <= totalPages; pageNum++) {
+            renderPage(pageNum);
+          }
         })
         .catch(function (error) {
           console.error("Error al cargar el PDF: ", error);
