@@ -3,14 +3,56 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="styles.css" />
-    <title>Menu Shibuya</title>
+    <title>Previsualización de PDF</title>
+    <style>
+      #pdfViewer {
+        width: 100%;
+        height: 100vh;
+        border: none;
+      }
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+      h1 {
+        text-align: center;
+        margin-top: 20px;
+      }
+    </style>
   </head>
   <body>
-    <iframe
-      src="./public/Menú_Shibuya_QR.pdf"
-      width="100%"
-      height="600px"
-    ></iframe>
+    <div id="pdfViewer"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+
+    <script>
+      var url = "./public/Menú_Shibuya_QR.pdf";
+
+      var loadingTask = pdfjsLib.getDocument(url);
+      loadingTask.promise
+        .then(function (pdf) {
+          pdf.getPage(1).then(function (page) {
+            var scale = 1.5;
+            var viewport = page.getViewport({ scale: scale });
+
+            var canvas = document.createElement("canvas");
+            var context = canvas.getContext("2d");
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
+
+            page.render({
+              canvasContext: context,
+              viewport: viewport,
+            });
+
+            document.getElementById("pdfViewer").appendChild(canvas);
+          });
+        })
+        .catch(function (error) {
+          console.error("Error al cargar el PDF: ", error);
+        });
+    </script>
   </body>
 </html>
