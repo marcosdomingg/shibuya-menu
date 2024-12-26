@@ -25,41 +25,48 @@
 
       /* El contenedor del visor de PDF, con scroll interno */
       #pdfViewer {
-        width: 90%; /* Ocupa el 90% del ancho de la pantalla */
-        max-width: 816px; /* Limita el ancho máximo a 816px */
-        height: 80vh; /* La altura se ajusta al 80% de la altura de la pantalla */
-        overflow-y: auto; /* Permite el desplazamiento vertical */
+        width: 90%; /* El visor ocupa el 90% del ancho de la pantalla */
+        max-width: 816px; /* Ancho máximo de una hoja tamaño carta */
+        height: 80vh; /* 80% de la altura de la ventana */
+        overflow-y: auto; /* Scroll interno cuando el contenido excede la altura */
         display: flex;
         flex-direction: column;
         align-items: center;
         padding: 10px;
-        background-color: white; /* Fondo blanco para el visor */
-        border-radius: 8px; /* Bordes redondeados */
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Sombra suave alrededor */
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
       }
 
-      /* Estilo de cada canvas de las páginas */
       canvas {
         display: block;
-        margin-bottom: 40px; /* Espacio entre las páginas */
-        width: 100%; /* Las páginas se ajustan al 100% del ancho del contenedor */
+        margin-bottom: 40px; /* Espacio entre páginas */
+        width: 100%; /* El canvas ocupa el 100% del ancho del contenedor */
       }
 
-      /* Estilos adicionales para hacer el diseño más responsivo */
       html,
       body {
         height: 100%;
       }
 
-      /* Media query para hacer que el visor sea más pequeño en pantallas más pequeñas */
+      /* Media queries para tamaños de dispositivos más pequeños */
       @media (max-width: 768px) {
         body {
-          padding: 0 10px; /* Espaciado extra en pantallas pequeñas */
+          padding: 0 10px;
         }
 
         #pdfViewer {
-          width: 100%; /* El visor ocupará todo el ancho de la pantalla */
-          height: 70vh; /* Ajustamos la altura al 70% de la pantalla */
+          width: 100%; /* El visor ocupa todo el ancho */
+          height: 70vh; /* Ajusta la altura al 70% de la ventana */
+          margin-top: 20px; /* Añade margen superior para evitar que se corte */
+        }
+      }
+
+      @media (max-width: 480px) {
+        #pdfViewer {
+          width: 100%; /* El visor ocupa todo el ancho */
+          height: 60vh; /* Ajusta la altura al 60% de la ventana */
+          margin-top: 20px; /* Añade margen superior también en dispositivos pequeños */
         }
       }
     </style>
@@ -80,8 +87,6 @@
           function renderPage(pageNum) {
             pdf.getPage(pageNum).then(function (page) {
               var viewport = page.getViewport({ scale: 1 });
-
-              // Calcular la escala en función del ancho de la pantalla y la densidad de píxeles (devicePixelRatio)
               var scale =
                 (window.innerWidth / viewport.width) * window.devicePixelRatio;
               var scaledViewport = page.getViewport({ scale: scale });
@@ -91,7 +96,6 @@
               canvas.width = scaledViewport.width;
               canvas.height = scaledViewport.height;
 
-              // Renderizar la página
               page.render({
                 canvasContext: context,
                 viewport: scaledViewport,
@@ -101,7 +105,6 @@
             });
           }
 
-          // Renderizar todas las páginas
           for (var pageNum = 1; pageNum <= totalPages; pageNum++) {
             renderPage(pageNum);
           }
