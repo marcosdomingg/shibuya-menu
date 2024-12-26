@@ -23,15 +23,16 @@
         overflow: hidden;
       }
 
-      /* El contenedor del visor de PDF con un tamaño fijo de 8.5 x 11 pulgadas */
+      /* El contenedor del visor de PDF, con scroll interno */
       #pdfViewer {
-        width: 816px; /* Ancho de 8.5 pulgadas en píxeles (96 dpi) */
-        height: 1056px; /* Alto de 11 pulgadas en píxeles (96 dpi) */
+        width: 90%; /* Ocupa el 90% del ancho de la pantalla */
+        max-width: 816px; /* Limita el ancho máximo a 816px */
+        height: 80vh; /* La altura se ajusta al 80% de la altura de la pantalla */
         overflow-y: auto; /* Permite el desplazamiento vertical */
         display: flex;
         flex-direction: column;
         align-items: center;
-        padding: 20px;
+        padding: 10px;
         background-color: white; /* Fondo blanco para el visor */
         border-radius: 8px; /* Bordes redondeados */
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Sombra suave alrededor */
@@ -40,7 +41,7 @@
       /* Estilo de cada canvas de las páginas */
       canvas {
         display: block;
-        margin-bottom: 40px; /* Espacio (gap) entre las páginas */
+        margin-bottom: 40px; /* Espacio entre las páginas */
         width: 100%; /* Las páginas se ajustan al 100% del ancho del contenedor */
       }
 
@@ -51,22 +52,14 @@
       }
 
       /* Media query para hacer que el visor sea más pequeño en pantallas más pequeñas */
-      @media (max-width: 900px) {
-        #pdfViewer {
-          width: 90%; /* Ocupa el 90% del ancho en pantallas más pequeñas */
-          height: auto; /* Ajusta la altura automáticamente */
-        }
-      }
-
-      /* Media query para dispositivos móviles */
       @media (max-width: 768px) {
         body {
           padding: 0 10px; /* Espaciado extra en pantallas pequeñas */
         }
 
         #pdfViewer {
-          padding-top: 10px;
-          padding-bottom: 10px;
+          width: 100%; /* El visor ocupará todo el ancho de la pantalla */
+          height: 70vh; /* Ajustamos la altura al 70% de la pantalla */
         }
       }
     </style>
